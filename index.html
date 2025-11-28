@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Break A Leg — The Legend Still Made It to Lunch</title>
+
+<style>
+    :root {
+        --gold: #f7d475;
+        --deep-gold: #c99a32;
+        --purple: #b48cff;
+        --bg: #050308;
+        --accent: #ffefc4;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family: "Georgia", "Times New Roman", serif;
+        background: radial-gradient(circle at center, #201321 0%, #050308 70%);
+        color: #fdfdfd;
+        overflow: hidden;
+    }
+
+    /* Stage container */
+    .stage {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 3vh 4vw 6vh;
+    }
+
+    /* Marquee title bar */
+    .marquee {
+        position: absolute;
+        top: 2vh;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 0.7rem 1.7rem;
+        border-radius: 999px;
+        background: radial-gradient(circle at top, #4a1b22 0%, #19070a 60%);
+        border: 2px solid var(--deep-gold);
+        box-shadow:
+            0 0 18px rgba(0,0,0,0.8),
+            0 0 25px rgba(255, 215, 128, 0.7);
+        font-size: clamp(0.8rem, 1.6vw, 1.2rem);
+        letter-spacing: 4px;
+        text-align: center;
+        text-transform: uppercase;
+        color: var(--gold);
+        text-shadow: 0 0 8px rgba(0,0,0,0.9);
+    }
+
+    /* Little marquee bulbs */
+    .marquee::before,
+    .marquee::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: #fffbda;
+        box-shadow: 0 0 8px #fffbda;
+        animation: bulb-flicker 1.4s infinite alternate;
+    }
+
+    .marquee::before { left: 10px; }
+    .marquee::after  { right: 10px; animation-delay: 0.4s; }
+
+    @keyframes bulb-flicker {
+        0% { opacity: 0.3; transform: scale(0.9); }
+        100% { opacity: 1; transform: scale(1.1); }
+    }
+
+    /* Curtains */
+    .curtain {
+        position: fixed;
+        top: 0;
+        width: 50vw;
+        height: 100vh;
+        z-index: 999;
+        background:
+            repeating-linear-gradient(
+                to right,
+                #7c1418 0px,
+                #7c1418 20px,
+                #4d0508 20px,
+                #4d0508 40px
+            );
+        box-shadow:
+            inset 10px 0 30px rgba(0,0,0,0.7),
+            0 0 25px rgba(0,0,0,0.8);
+        transform-origin: center;
+        animation: curtain-open 3.2s ease-in-out forwards;
+    }
+
+    .curtain.left { left: 0; border-right: 2px solid #2f0003; }
+    .curtain.right { right: 0; border-left: 2px solid #2f0003; }
+
+    @keyframes curtain-open {
+        0%   { width: 50vw; }
+        75%  { width: 2vw; }
+        100% { width: 0; }
+    }
+
+    /* Moving spotlight cone */
+    .spotlight {
+        position: absolute;
+        top: -30vh;
+        left: 50%;
+        width: 250vw;
+        height: 250vh;
+        transform-origin: top center;
+        pointer-events: none;
+        background:
+            radial-gradient(ellipse at center,
+                rgba(255,255,210,0.38) 0%,
+                rgba(255,255,210,0.18) 25%,
+                rgba(0,0,0,0) 65%);
+        opacity: 0;
+        animation:
+            spotlight-on 2.6s forwards ease-out 1.2s,
+            spotlight-sway 8s ease-in-out infinite 3.8s;
+        mix-blend-mode: screen;
+        z-index: 1;
+    }
+
+    @keyframes spotlight-on {
+        from { opacity: 0; transform: translateX(-50%) scale(1.1); }
+        to   { opacity: 1; transform: translateX(-50%) scale(1); }
+    }
+
+    @keyframes spotlight-sway {
+        0%   { transform: translateX(-50%) rotate(-4deg); }
+        50%  { transform: translateX(-47%) rotate(3deg); }
+        100% { transform: translateX(-50%) rotate(-4deg); }
+    }
+
+    /* Sparkles / dust in the light */
+    .sparkles {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 2;
+    }
+
+    .sparkle {
+        position: absolute;
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.85);
+        box-shadow: 0 0 10px rgba(255,255,255,0.9);
+        opacity: 0;
+        animation: sparkle 3s infinite;
+    }
+
+    .sparkle.s1 { top: 30%; left: 40%; animation-delay: 0.2s; }
+    .sparkle.s2 { top: 45%; left: 55%; animation-delay: 0.9s; }
+    .sparkle.s3 { top: 60%; left: 47%; animation-delay: 1.4s; }
+    .sparkle.s4 { top: 35%; left: 63%; animation-delay: 2.1s; }
+    .sparkle.s5 { top: 52%; left: 35%; animation-delay: 2.6s; }
+
+    @keyframes sparkle {
+        0%   { opacity: 0; transform: scale(0.4); }
+        30%  { opacity: 1; transform: scale(1); }
+        60%  { opacity: 0.7; transform: scale(0.8); }
+        100% { opacity: 0; transform: scale(0.3); }
+    }
+
+    /* Legend image */
+    .legend-img {
+        position: relative;
+        width: min(64vw, 700px);
+        max-height: 70vh;
+        z-index: 3;
+        opacity: 0;
+        transform: scale(0.82) translateY(10px);
+        animation: image-reveal 2.9s forwards ease-out 2.2s;
+        filter: drop-shadow(0 0 25px rgba(0,0,0,0.9));
+    }
+
+    @keyframes image-reveal {
+        0%   { opacity: 0; transform: scale(0.82) translateY(20px); }
+        100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    /* Audio player container */
+    .player {
+        position: relative;
+        z-index: 4;
+        margin-top: 3vh;
+        padding: 1.1rem 1.5rem 1.2rem;
+        border-radius: 16px;
+        background: radial-gradient(circle at top, #3a2138 0%, #140712 70%);
+        border: 1px solid rgba(247,212,117,0.6);
+        box-shadow:
+            0 8px 25px rgba(0,0,0,0.85),
+            0 0 20px rgba(180,140,255,0.5);
+        width: min(480px, 90vw);
+    }
+
+    .player-title {
+        font-size: 0.9rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin-bottom: 0.7rem;
+        text-align: center;
+    }
+
+    .controls-row {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        grid-template-rows: auto auto;
+        column-gap: 0.8rem;
+        row-gap: 0.4rem;
+        align-items: center;
+    }
+
+    .time-labels {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.75rem;
+        color: rgba(255,255,255,0.8);
+        margin-top: 0.1rem;
+    }
+
+    .play-btn {
+        grid-row: 1 / span 2;
+        justify-self: center;
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        border: 2px solid var(--gold);
+        background: radial-gradient(circle at 30% 30%, #ffffff 0%, #f7d475 35%, #8b5f0d 100%);
+        box-shadow:
+            0 0 14px rgba(255,220,150,0.9),
+            0 0 30px rgba(0,0,0,0.9);
+        color: #3c2100;
+        font-size: 1.4rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: transform 0.1s ease, box-shadow 0.1s ease;
+    }
+
+    .play-btn:hover {
+        transform: scale(1.05);
+        box-shadow:
+            0 0 18px rgba(255,220,150,1),
+            0 0 40px rgba(0,0,0,1);
+    }
+
+    .play-btn:active {
+        transform: scale(0.96);
+    }
+
+    .seek-wrapper {
+        grid-column: 2 / 3;
+        grid-row: 1 / 2;
+        width: 100%;
+    }
+
+    /* Themed range slider */
+    .seek {
+        width: 100%;
+        -webkit-appearance: none;
+        appearance: none;
+        height: 6px;
+        border-radius: 999px;
+        background: linear-gradient(to right, var(--gold), var(--purple));
+        outline: none;
+        cursor: pointer;
+    }
+
+    .seek::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: #fff;
+        border: 2px solid var(--deep-gold);
+        box-shadow:
+            0 0 7px rgba(255,255,255,0.9),
+            0 0 14px rgba(247,212,117,0.9);
+        margin-top: -5px;
+    }
+
+    .seek::-moz-range-thumb {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: #fff;
+        border: 2px solid var(--deep-gold);
+        box-shadow:
+            0 0 7px rgba(255,255,255,0.9),
+            0 0 14px rgba(247,212,117,0.9);
+    }
+
+    .seek::-moz-range-track {
+        background: linear-gradient(to right, var(--gold), var(--purple));
+        height: 6px;
+        border-radius: 999px;
+    }
+
+    .time-readout {
+        font-variant-numeric: tabular-nums;
+    }
+
+    .footer-note {
+        position: absolute;
+        bottom: 1vh;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 0.7rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: rgba(255,255,255,0.4);
+    }
+
+    @media (max-width: 700px) {
+        .marquee { letter-spacing: 2px; padding-inline: 1.2rem; }
+        .legend-img { width: min(88vw, 700px); }
+    }
+</style>
+</head>
+<body>
+
+<div class="stage">
+
+    <!-- Moving spotlight + sparkles -->
+    <div class="spotlight"></div>
+    <div class="sparkles">
+        <div class="sparkle s1"></div>
+        <div class="sparkle s2"></div>
+        <div class="sparkle s3"></div>
+        <div class="sparkle s4"></div>
+        <div class="sparkle s5"></div>
+    </div>
+
+    <!-- Marquee -->
+    <div class="marquee">BREAK A LEG • THE LEGEND STILL MADE IT TO LUNCH</div>
+
+    <!-- Legend Image -->
+    <img src="1.png" alt="Break a Leg Legend" class="legend-img" />
+
+    <!-- Custom Player -->
+    <div class="player">
+        <div class="player-title">Original Cast Recording · BREAK.mp3</div>
+        <div class="controls-row">
+            <button class="play-btn" id="playPause" aria-label="Play / Pause">
+                ▶
+            </button>
+
+            <div class="seek-wrapper">
+                <input type="range" min="0" max="100" value="0" class="seek" id="seekBar" />
+                <div class="time-labels">
+                    <span class="time-readout" id="currentTime">0:00</span>
+                    <span class="time-readout" id="duration">0:00</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-note">
+        CURTAINS UP FOR THE KID WHO NEVER MISSED HIS CUE.
+    </div>
+</div>
+
+<!-- The audio element (hidden, controlled by JS) -->
+<audio id="audio" src="BREAK.mp3"></audio>
+
+<!-- Curtains on top of everything -->
+<div class="curtain left"></div>
+<div class="curtain right"></div>
+
+<script>
+    const audio = document.getElementById('audio');
+    const playPauseBtn = document.getElementById('playPause');
+    const seekBar = document.getElementById('seekBar');
+    const currentTimeEl = document.getElementById('currentTime');
+    const durationEl = document.getElementById('duration');
+
+    function formatTime(seconds) {
+        if (!isFinite(seconds)) return '0:00';
+        const m = Math.floor(seconds / 60);
+        const s = Math.floor(seconds % 60);
+        return m + ':' + (s < 10 ? '0' + s : s);
+    }
+
+    // When metadata is loaded, set duration
+    audio.addEventListener('loadedmetadata', () => {
+        durationEl.textContent = formatTime(audio.duration);
+    });
+
+    // Update seek bar & time display as audio plays
+    audio.addEventListener('timeupdate', () => {
+        if (!isFinite(audio.duration) || audio.duration === 0) return;
+        const progress = (audio.currentTime / audio.duration) * 100;
+        seekBar.value = progress;
+        currentTimeEl.textContent = formatTime(audio.currentTime);
+    });
+
+    // Seek when user moves range
+    seekBar.addEventListener('input', () => {
+        if (!isFinite(audio.duration) || audio.duration === 0) return;
+        const newTime = (seekBar.value / 100) * audio.duration;
+        audio.currentTime = newTime;
+    });
+
+    // Play/pause button
+    playPauseBtn.addEventListener('click', () => {
+        if (audio.paused) {
+            audio.play();
+            playPauseBtn.textContent = '❚❚';
+        } else {
+            audio.pause();
+            playPauseBtn.textContent = '▶';
+        }
+    });
+
+    // Reset button icon when audio ends
+    audio.addEventListener('ended', () => {
+        playPauseBtn.textContent = '▶';
+        seekBar.value = 0;
+        currentTimeEl.textContent = '0:00';
+    });
+
+    // Optional: pressing spacebar toggles play/pause
+    document.addEventListener('keydown', (e) => {
+        if (e.code === 'Space') {
+            e.preventDefault();
+            playPauseBtn.click();
+        }
+    });
+</script>
+
+</body>
+</html>
